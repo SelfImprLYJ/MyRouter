@@ -1,1 +1,1 @@
-include ':app', ':login', ':member', ':arouter'
+include ':app', ':login', ':member', ':arouter', ':anotations', ':annotation_complier', ':annotation_learning', ':javapoet_learning'
