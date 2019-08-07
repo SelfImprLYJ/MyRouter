@@ -8,5 +8,5 @@ import android.app.Activity;
  * Description：用来规范所有的工具类
  */
 public interface IRouter {
-    void putActivity(Activity activity);
+    void putActivity();
 }

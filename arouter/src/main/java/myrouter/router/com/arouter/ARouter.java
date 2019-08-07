@@ -7,12 +7,15 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import dalvik.system.DexFile;
 
@@ -23,6 +26,7 @@ import dalvik.system.DexFile;
  */
 public class ARouter {
 
+    private static final String ROUTES_PACKAGE_NAME = "com.myrouter.util";
     //装载左右Activity的类对象容器
     private Map<String, Class<? extends Activity>> mActivityMap;
     private Context mContext;
@@ -30,67 +34,46 @@ public class ARouter {
     private ARouter() {
     }
 
-    public static ARouter getInstance(){
+    public static ARouter getInstance() {
         return ARouter.InnerClass.INSTANCE;
     }
 
-    public void init(Application application){
+    public void init(Application application) {
         mContext = application;
         mActivityMap = new HashMap<>();
-        List<String> classNames = getClassName("com.myrouter.util");
-        if (classNames != null && classNames.size() > 0) {
-            for (String className : classNames){
-                try {
-                    Class<?> aClass = Class.forName(className);
-                    if (IRouter.class.isAssignableFrom(aClass)){
-                        IRouter iRouter = (IRouter) aClass.newInstance();
-                        iRouter.putActivity(null);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
 
-
-    }
-
-    private List<String> getClassName(String packageName) {
-        //创建一个class集合对象
-        List<String> classNames = new ArrayList<>();
-        String path = null;
         try {
-            path = mContext.getPackageManager().getApplicationInfo(mContext.getPackageName(),0).sourceDir;
-            //根据apk的完整路径获取到编译后的dex文件
-            DexFile dexFile = new DexFile(path);
-            //获取编译后的dex文件中的所有class
-            Enumeration<String> entries = dexFile.entries();
-            //进行遍历
-            while (entries.hasMoreElements()){
-                //通过遍历所有的class包名
-                String name = entries.nextElement();
-                //判断类的包名是否符合
-                if (name.contains(packageName)){
-                    //如果符合，就添加到集合中
-                    classNames.add(name);
+            Set<String> classNames = ClassUtils.getFileNameByPackageName(application, ROUTES_PACKAGE_NAME);
+            if (classNames != null && classNames.size() > 0) {
+                for (String className : classNames) {
+                    Class<?> aClass = Class.forName(className);
+                    if (IRouter.class.isAssignableFrom(aClass)) {
+                        IRouter iRouter = (IRouter) aClass.newInstance();
+                        iRouter.putActivity();
+                    }
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
-        return classNames;
+
+//        List<String> classNames = getClassName(ROUTES_PACKAGE_NAME);
+//        classNames = getClasses(mContext,ROUTES_PACKAGE_NAME);
+
+
     }
 
-    public void putActivity(String path,Class <? extends Activity> clazz){
+    public void putActivity(String path, Class<? extends Activity> clazz) {
+
         if (mActivityMap == null) {
             return;
         }
         if (clazz != null && !TextUtils.isEmpty(path)) {
-            mActivityMap.put(path,clazz);
+            mActivityMap.put(path, clazz);
         }
     }
 
-    public void jumpActivity(String path, Bundle bundle){
+    public void jumpActivity(String path, Bundle bundle) {
         if (mContext == null || mActivityMap == null) {
             throw new RuntimeException("Arouter 没有初始化");
         }
@@ -98,13 +81,15 @@ public class ARouter {
         if (aClass == null) {
             return;
         }
-        Intent intent = new Intent(mContext,aClass);
-        intent.putExtras(bundle);
+        Intent intent = new Intent(mContext, aClass);
+        if (bundle != null) {
+            intent.putExtras(bundle);
+        }
         mContext.startActivity(intent);
 
     }
 
-    private static class InnerClass{
+    private static class InnerClass {
         private static final ARouter INSTANCE = new ARouter();
     }
 

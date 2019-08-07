@@ -8,8 +8,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/annotation_complier" />
             <option value="$PROJECT_DIR$/annotation_learning" />
+            <option value="$PROJECT_DIR$/annotation_processor" />
             <option value="$PROJECT_DIR$/anotations" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/arouter" />

@@ -36,7 +36,7 @@ dependencies {
         implementation project(':member')
     }
     implementation project(':arouter')
-    annotationProcessor project(':annotation_complier')
+    annotationProcessor project(':annotation_processor')
     implementation project(':anotations')
     if (!ANNOTATION_LEARN_IS_APPLICATION.toBoolean()){
         implementation project(path: ':annotation_learning')

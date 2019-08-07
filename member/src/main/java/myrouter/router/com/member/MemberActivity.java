@@ -7,7 +7,6 @@ import myrouter.router.com.anotations.BindPath;
 
 @BindPath("member/member")
 public class MemberActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

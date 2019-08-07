@@ -17,6 +17,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void jumpActiviy(View view) {
-        ARouter.getInstance().jumpActivity("member/member",null);
+        ARouter.getInstance().jumpActivity("register/register",null);
     }
 }
